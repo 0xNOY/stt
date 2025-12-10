@@ -126,7 +126,7 @@ class G1AudioSource(AbstractAudioSource):
                 self.sock = None
             raise RuntimeError(f"Failed to join multicast group: {e}") from e
 
-        logger.debug(f"Listening for audio on {self.multicast_ip}:{self.port}")
+        logger.info(f"Listening for audio on {self.multicast_ip}:{self.port}")
 
         return self
 

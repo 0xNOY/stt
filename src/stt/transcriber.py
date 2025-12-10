@@ -4,7 +4,7 @@ from typing import Iterator
 
 import numpy as np
 from loguru import logger
-from faster_whisper import WhisperModel
+from faster_whisper import WhisperModel, BatchedInferencePipeline
 
 from stt.audio_source import AbstractAudioSource
 
@@ -36,19 +36,25 @@ class Transcriber(abc.ABC):
 class WhisperTranscriber(Transcriber):
     def __init__(self, config: TranscriberConfig):
         super().__init__(config)
-        self.model = WhisperModel(
+        model = WhisperModel(
             config.model_name, device=config.device, compute_type=config.compute_type
         )
+        self.model = BatchedInferencePipeline(model)
 
     def transcribe(
         self, audio: np.ndarray[np.int16], language: str | None = None
     ) -> str:
         segs, info = self.model.transcribe(
-            audio,
+            audio.astype(np.float32),
             batch_size=self.config.batch_size,
             language=language or self.config.language,
         )
 
-        logger.debug(f"Transcribed({info.duration:.2f}s): {segs[0].text}")
+        text = " ".join([seg.text for seg in segs])
 
-        return segs[0].text
+        logger.debug(f"Transcribed({info.duration:.2f}s): {text}")
+
+        return text
+
+    def transcribe_stream(self, audio_source: AbstractAudioSource) -> Iterator[str]:
+        raise NotImplementedError

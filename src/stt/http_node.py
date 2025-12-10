@@ -2,6 +2,7 @@ import contextlib
 import os
 import typing
 
+import torch
 from fastapi import FastAPI
 from loguru import logger
 from pydantic import BaseModel, Field
@@ -9,8 +10,6 @@ from pydantic import BaseModel, Field
 from stt.audio_source import G1AudioSource
 from stt.recoder import VoiceActivityRecorder
 from stt.transcriber import TranscriberConfig, WhisperTranscriber
-
-# --- Configuration Models ---
 
 
 class AudioSourceConfig(BaseModel):
@@ -23,19 +22,25 @@ class AudioSourceConfig(BaseModel):
 
 class RecorderRuntimeConfig(BaseModel):
     max_duration_sec: float = Field(
-        default=30.0, description="Maximum recording duration"
+        default=10.0, description="Maximum recording duration"
     )
     silence_threshold_sec: float = Field(
-        default=2.0, description="Silence duration to stop recording"
+        default=1.5, description="Silence duration to stop recording"
     )
     speech_confidence_threshold: float = Field(default=0.4, description="VAD threshold")
-    pre_buffer_sec: float = Field(default=0.5, description="Pre-buffer duration")
+    pre_buffer_sec: float = Field(default=0.2, description="Pre-buffer duration")
 
 
 class TranscriberInitConfig(BaseModel):
     model_name: str = Field(default="small", description="Whisper model name")
-    device: str = Field(default="cpu", description="Device to run model on")
-    compute_type: str = Field(default="int8", description="Compute type")
+    device: str = Field(
+        default="cuda" if torch.cuda.is_available() else "cpu",
+        description="Device to run model on",
+    )
+    compute_type: str = Field(
+        default="float16" if torch.cuda.is_available() else "int8",
+        description="Compute type",
+    )
     batch_size: int = Field(default=8, description="Batch size")
 
 
@@ -61,9 +66,6 @@ class TranscriptionRequest(BaseModel):
 
 class TranscriptionResponse(BaseModel):
     text: str
-
-
-# --- Application State ---
 
 
 class AppState:
