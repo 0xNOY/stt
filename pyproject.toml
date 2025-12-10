@@ -1,0 +1,26 @@
+[project]
+name = "stt"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "0xNOY", email = "noy@abc-net.jp" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "faster-whisper>=1.2.1",
+    "loguru>=0.7.3",
+    "silero-vad>=6.2.0",
+    "torch>=2.9.1",
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+]
+
+[project.scripts]
+stt-http-node = "stt.http_node:start"
+stt = "stt.cli:main"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
