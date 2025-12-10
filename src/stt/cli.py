@@ -75,7 +75,15 @@ def main():
 
     if args.command == "serve":
         if args.subcommand == "http":
-            from stt.http_node import start as start_http_node
+            try:
+                from stt.http_node import start as start_http_node
+            except ImportError as e:
+                print(f"Error: Server dependencies are missing. ({e})")
+                print("To run the server, please install with the 'server' extra:")
+                print("  pip install '.[server]'")
+                print("Or if using uvx:")
+                print("  uvx --from 'stt[server]' stt serve http")
+                sys.exit(1)
 
             start_http_node()
         else:
