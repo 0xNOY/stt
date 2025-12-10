@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "0xNOY", email = "noy@abc-net.jp" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "loguru>=0.7.3",
     "httpx>=0.27.0",
