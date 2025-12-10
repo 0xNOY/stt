@@ -45,9 +45,14 @@ class VoiceActivityRecorder:
         Returns:
             NumPy array containing the recorded audio data. Returns None if no recording was made.
         """
-        chunks_per_sec = self.sample_rate / self.chunk_size
+        samples_per_chunk = self.chunk_size // 2
+        chunks_per_sec = self.sample_rate / samples_per_chunk
         pre_buffer_size = int(pre_buffer_sec * chunks_per_sec)
         silent_chunk_threshold = int(silence_threshold_sec * chunks_per_sec)
+
+        logger.debug(
+            f"Recording with params: max_duration_sec={max_duration_sec}, silence_threshold_sec={silence_threshold_sec}, speech_confidence_threshold={speech_confidence_threshold}, pre_buffer_sec={pre_buffer_sec}"
+        )
 
         pre_buffer = deque(maxlen=pre_buffer_size)
         recorded_chunks: list[np.ndarray] = []
@@ -75,7 +80,7 @@ class VoiceActivityRecorder:
                         audio_chunk_tensor, self.sample_rate
                     ).item()
 
-                    is_speaking = speech_probability > speech_confidence_threshold
+                    is_speaking = speech_probability >= speech_confidence_threshold
 
                     # DEBUG
                     RED = "\033[91m"

@@ -44,8 +44,12 @@ class WhisperTranscriber(Transcriber):
     def transcribe(
         self, audio: np.ndarray[np.int16], language: str | None = None
     ) -> str:
+        logger.debug(
+            f"Transcribing with params: batch_size={self.config.batch_size}, language={language or self.config.language}"
+        )
+
         segs, info = self.model.transcribe(
-            audio.astype(np.float32),
+            audio.astype(np.float32) / 32768.0,
             batch_size=self.config.batch_size,
             language=language or self.config.language,
         )
