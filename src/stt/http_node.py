@@ -32,13 +32,13 @@ class RecorderRuntimeConfig(BaseModel):
 
 
 class TranscriberInitConfig(BaseModel):
-    model_name: str = Field(default="small", description="Whisper model name")
+    model_name: str = Field(default="distil-large-v3", description="Whisper model name")
     device: str = Field(
         default="cuda" if torch.cuda.is_available() else "cpu",
         description="Device to run model on",
     )
     compute_type: str = Field(
-        default="float16" if torch.cuda.is_available() else "int8",
+        default="int8_float16" if torch.cuda.is_available() else "int8",
         description="Compute type",
     )
     batch_size: int = Field(default=8, description="Batch size")
