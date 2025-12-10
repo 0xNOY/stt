@@ -82,14 +82,6 @@ class VoiceActivityRecorder:
 
                     is_speaking = speech_probability >= speech_confidence_threshold
 
-                    # DEBUG
-                    RED = "\033[91m"
-                    GREEN = "\033[92m"
-                    RESET = "\033[0m"
-                    print(
-                        f"{GREEN if is_speaking else RED}Speech probability: {speech_probability:.2f}{RESET}"
-                    )
-
                     if is_speaking and not is_recording:
                         logger.info("Voice detected, starting to record.")
                         is_recording = True

@@ -24,13 +24,13 @@ class AudioSourceConfig(BaseModel):
 
 class RecorderRuntimeConfig(BaseModel):
     max_duration_sec: float = Field(
-        default=10.0, description="Maximum recording duration"
+        default=15.0, description="Maximum recording duration"
     )
     silence_threshold_sec: float = Field(
         default=1.5, description="Silence duration to stop recording"
     )
     speech_confidence_threshold: float = Field(default=0.4, description="VAD threshold")
-    pre_buffer_sec: float = Field(default=0.2, description="Pre-buffer duration")
+    pre_buffer_sec: float = Field(default=0.1, description="Pre-buffer duration")
 
 
 class TranscriberInitConfig(BaseModel):
