@@ -74,7 +74,12 @@ class G1AudioSource(AbstractAudioSource):
     def _get_local_ip(self, target_subnet_prefix="") -> str:
         """Finds the local IP address on the specific subnet."""
         if not target_subnet_prefix:
-            target_subnet_prefix = self.multicast_ip[: self.multicast_ip.rfind(".") + 1]
+            target_subnet_prefix = (
+                "192"
+                + self.multicast_ip[
+                    self.multicast_ip.find(".") : self.multicast_ip.rfind(".") + 1
+                ]
+            )
 
         if netifaces:
             try:
@@ -102,6 +107,7 @@ class G1AudioSource(AbstractAudioSource):
             pass
 
         self.sock.bind(("", self.port))
+        self.sock.settimeout(1.0)
 
         local_ip = self._get_local_ip()
 

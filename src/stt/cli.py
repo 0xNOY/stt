@@ -88,6 +88,10 @@ def main():
             start_http_node()
         else:
             serve_parser.print_help()
+    elif args.command == "viz":
+        from stt.viz import start
+
+        start()
     else:
         parser.print_help()
 
